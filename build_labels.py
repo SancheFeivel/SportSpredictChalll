@@ -1,4 +1,4 @@
-"""Build the 0/1 answers for Q1-8 and Q10 from box scores. Q9 needs play-by-play."""
+"""Build the 0/1 answers for Q1-8 and Q10 from box scores. Q9 (lead_20) comes from data/q9.csv if present."""
 import glob
 import os
 
@@ -43,6 +43,13 @@ g["pts_30"] = (p.mp.reindex(g.index) >= 30).astype(int)
 g["ast_10"] = (p.ma.reindex(g.index) >= 10).astype(int)
 g["reb_12"] = (p.mr.reindex(g.index) >= 12).astype(int)
 g["threes_5"] = (p.m3.reindex(g.index) >= 5).astype(int)
+
+# Q9: NaN where play-by-play not pulled yet
+if os.path.exists("data/q9.csv"):
+    q9 = pd.read_csv("data/q9.csv", dtype={"GAME_ID": str}).drop_duplicates("GAME_ID").set_index("GAME_ID")
+    g["lead_20"] = q9["lead_20"].reindex(g.index)
+else:
+    g["lead_20"] = float("nan")
 
 g = g.sort_values("date")
 g.to_csv("data/labels.csv")

@@ -1,4 +1,5 @@
-"""Train one model per question. Keep model only if it beats the recent-rate baseline on the test season."""
+"""Train one model per question. Keep model only if it is in MODEL_OK and beats the recent-rate baseline.
+SHRINK pulls unstable questions toward the base rate: p = w*model + (1-w)*rate."""
 import joblib
 import numpy as np
 import pandas as pd
@@ -9,25 +10,22 @@ from sklearn.preprocessing import StandardScaler
 
 TEST_SEASON = "2025-26"
 CLIP = (0.02, 0.98)
-# positive edge in every walk-forward season (holdout_check.py); extend after player features
-MODEL_OK = {"home_win", "total_230", "threes_25", "team_120", "pts_30", "ast_10", "reb_12"}
+# positive in most walk-forward seasons (holdout_check.py). Last three are shrunk: 2026-27 went negative on small n.
+MODEL_OK = {"home_win", "threes_25", "reb_12", "team_120", "total_230", "pts_30", "ast_10"}
+SHRINK = {"total_230": 0.5, "pts_30": 0.5, "ast_10": 0.5}
 PLAYER_Q = {"pts_30", "ast_10", "reb_12", "threes_5"}
+MIN_TEST, MIN_TRAIN = 100, 300
 
 TARGETS = [
     "home_win", "total_230", "threes_25", "pts_30", "ast_10",
-    "reb_12", "team_120", "margin_10", "threes_5",
-]  # Q9 (20-pt lead) needs play-by-play, added later
+    "reb_12", "team_120", "margin_10", "lead_20", "threes_5",
+]
 
 df = pd.read_csv("data/features.csv", dtype={"GAME_ID": str}, index_col=0, parse_dates=["date"])
 feats = [c for c in df.columns if c.startswith(("h_r_", "a_r_", "d_", "sum_"))] + [
     "h_rest", "a_rest", "h_b2b", "a_b2b",
 ]
 pf_feats = [c for c in df.columns if c.startswith("pf_")]
-
-train = df[df.season < TEST_SEASON]
-test = df[df.season == TEST_SEASON]
-recent_seasons_train = sorted(train.season.unique())[-2:]
-recent_all = sorted(df.season.unique())[-2:]
 
 
 def new_model():
@@ -36,7 +34,21 @@ def new_model():
 
 rows, saved = [], {}
 for t in TARGETS:
-    base_rate = train[train.season.isin(recent_seasons_train)][t].mean()
+    if t not in df.columns or df[t].notna().sum() == 0:
+        print(f"skip {t}: no labels (run pull_pbp.py then refresh)")
+        continue
+    d = df.dropna(subset=[t])
+    train, test = d[d.season < TEST_SEASON], d[d.season == TEST_SEASON]
+    recent_all = sorted(d.season.unique())[-2:]
+    rate_all = float(d[d.season.isin(recent_all)][t].mean())
+
+    if len(train) < MIN_TRAIN or len(test) < MIN_TEST:
+        saved[t] = {"type": "const", "p": rate_all}
+        rows.append({"question": t, "base_brier": None, "model_brier": None, "edge_pts": None, "use": "baseline (too little data)"})
+        continue
+
+    recent_tr = sorted(train.season.unique())[-2:]
+    base_rate = train[train.season.isin(recent_tr)][t].mean()
     b_base = brier_score_loss(test[t], np.full(len(test), base_rate))
 
     tf = feats + pf_feats if t in PLAYER_Q else feats
@@ -46,22 +58,16 @@ for t in TARGETS:
 
     use_model = b_model < b_base and t in MODEL_OK
     rows.append({
-        "question": t,
-        "base_brier": round(b_base, 4),
-        "model_brier": round(b_model, 4),
+        "question": t, "base_brier": round(b_base, 4), "model_brier": round(b_model, 4),
         "edge_pts": round((b_base - b_model) * 100, 2),
-        "use": "model" if use_model else "baseline",
+        "use": ("model" + (f" (shrink {SHRINK[t]})" if t in SHRINK else "")) if use_model else "baseline",
     })
 
-    # refit on all data for live use
     if use_model:
-        final = new_model().fit(df[tf], df[t])
-        saved[t] = {
-            "type": "model", "model": final, "features": tf,
-            "p": float(df[df.season.isin(recent_all)][t].mean()),  # fallback if features fail
-        }
+        final = new_model().fit(d[tf], d[t])
+        saved[t] = {"type": "model", "model": final, "features": tf, "p": rate_all, "w": SHRINK.get(t, 1.0)}
     else:
-        saved[t] = {"type": "const", "p": float(df[df.season.isin(recent_all)][t].mean())}
+        saved[t] = {"type": "const", "p": rate_all}
 
 print(pd.DataFrame(rows).to_string(index=False))
 joblib.dump(saved, "data/models.joblib")
