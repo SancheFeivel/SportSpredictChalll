@@ -1,0 +1,45 @@
+# Secrets and credentials (most important)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+config.local.*
+api_key*.txt
+
+# Personal info (legal name, phone, ID for winner verification)
+personal/
+id_scans/
+*.pdf
+The_Forecasters_Challenge_Plan_to_Win.docx
+
+# Data and logs (large, re-pullable, or your live submission history)
+data/
+logs/
+*.log
+*.csv
+*.parquet
+*.sqlite
+*.db
+
+# Trained models and caches
+models/
+*.pkl
+*.joblib
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
