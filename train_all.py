@@ -2,6 +2,10 @@
 
 SHRINK pulls unstable questions toward the base rate: p = w*model + (1-w)*rate.
 Base rate (const + fallback) = current season blended with last 2 seasons, weight grows with games played."""
+import hashlib
+import json
+import os
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -19,6 +23,8 @@ MODEL_OK = {"home_win", "threes_25", "reb_12", "team_120", "total_230", "pts_30"
 SHRINK = {"total_230": 0.5, "pts_30": 0.5, "ast_10": 0.5}
 PLAYER_Q = {"pts_30", "ast_10", "reb_12", "threes_5"}
 MIN_TEST, MIN_TRAIN = 100, 300
+C_VAL = 0.05
+HIST = "data/train_history.json"
 
 TARGETS = [
     "home_win", "total_230", "threes_25", "pts_30", "ast_10",
@@ -48,7 +54,37 @@ def live_rate(d, t):
 
 
 def new_model():
-    return make_pipeline(StandardScaler(), LogisticRegression(C=0.05, max_iter=2000))
+    return make_pipeline(StandardScaler(), LogisticRegression(C=C_VAL, max_iter=2000))
+
+
+def record_run(saved, df):
+    """Log a run only if something real changed: new games, config, features, model/baseline flips."""
+    hist = json.load(open(HIST)) if os.path.exists(HIST) else []
+    models = {t: s for t, s in saved.items() if s["type"] == "model"}
+    fp = {
+        "n_games": int(len(df)),
+        "last_date": str(df["date"].max().date()),
+        "C": C_VAL,
+        "shrink": SHRINK,
+        "types": {t: s["type"] for t, s in saved.items()},
+        "feat_sig": {t: hashlib.md5(",".join(s["features"]).encode()).hexdigest()[:8] for t, s in models.items()},
+    }
+    if hist and hist[-1]["fp"] == fp:
+        print("tracker: nothing changed, run not recorded")
+        return
+
+    coefs = {t: {"features": s["features"], "coef": s["model"][-1].coef_[0].tolist()} for t, s in models.items()}
+    prev = hist[-1]["coefs"] if hist else {}
+    drift = {}
+    for t, c in coefs.items():
+        if t in prev and prev[t]["features"] == c["features"]:
+            drift[t] = float(np.linalg.norm(np.array(c["coef"]) - np.array(prev[t]["coef"])))
+        else:
+            drift[t] = None  # new model or feature set changed: not comparable
+
+    hist.append({"run": len(hist) + 1, "fp": fp, "coefs": coefs, "drift": drift})
+    json.dump(hist, open(HIST, "w"))
+    print(f"tracker: recorded run {len(hist)} ({fp['n_games']} games, through {fp['last_date']})")
 
 
 rows, saved = [], {}
@@ -88,7 +124,6 @@ for t in TARGETS:
         saved[t] = {"type": "const", "p": rate_all}
 
 print(pd.DataFrame(rows).to_string(index=False))
-import track
-track.log_run(saved, rows, n_games=len(df))
+record_run(saved, df)
 joblib.dump(saved, "data/models.joblib")
 print("\nsaved data/models.joblib")

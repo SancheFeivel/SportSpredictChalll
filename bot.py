@@ -1,7 +1,8 @@
 """predict(home, away, date) -> 10 probabilities in contest order (Q1..Q10).
 
 Usage: python bot.py --home BOS --away NYK --date 2026-11-02
-Fallback chain per question: sim (if validated) -> model -> constant rate -> hard default.
+Fallback chain per question: sim (if validated) -> blended model -> constant rate -> hard default.
+Model output is blended with the recent base rate (BLEND) to cut early-season overconfidence.
 Early-season form is shrunk toward last season's prior (form.py), same as training.
 Never returns nothing, never returns 0 or 100.
 """
@@ -19,6 +20,15 @@ WINDOW = 10
 CLIP = (0.02, 0.98)
 Q9_RATE = 0.50  # TODO: replace with measured rate once play-by-play labels exist
 HARD_DEFAULT = 0.50
+
+# weight on model; rest goes to the recent base rate (spec["p"]).
+# 12-game log: model beat baseline on home_win only, ran 0.2-0.3 too high on total/pts_30/team_120.
+# Raise weights toward 1.0 once score_log.py shows stable edge over 100+ games.
+BLEND_DEFAULT = 0.5
+BLEND = {"home_win": 1.0}
+
+# player must have played within this many days of their team's latest game to count as rotation
+ROSTER_RECENCY_DAYS = 21
 
 QUESTIONS = [
     "home_win", "total_230", "threes_25", "pts_30", "ast_10",
@@ -89,26 +99,42 @@ def load_player_logs():
     if "pl" not in _PLAYER_CACHE:
         pl = pd.concat([pd.read_csv(f, dtype={"GAME_ID": str}) for f in sorted(glob.glob("data/P_*.csv"))])
         pl["date"] = pd.to_datetime(pl["GAME_DATE"])
+        pl["sy"] = form.season_year(pl["date"])
         _PLAYER_CACHE["pl"] = pl.sort_values("date")
     return _PLAYER_CACHE["pl"]
 
 
 def live_pf(home, away, game_date, out_players=()):
     """Same pf_* features as training. Roster = each player's latest team; out_players are dropped.
-    Caveat: early season uses last season's rosters until new games are pulled."""
+    Stale-roster guard: a player counts only if he played within ROSTER_RECENCY_DAYS of his team's
+    latest game, and, once the team has played this season, only if he has played this season too.
+    Caveat: traded players who have not yet played for the new team still map to the old team."""
     d = pd.Timestamp(game_date)
+    sy = form.season_year_of(d)
     pl = load_player_logs()
     prior = pl[pl["date"] < d]
     last10 = prior.groupby("PLAYER_ID").tail(WINDOW)
     agg = last10.groupby("PLAYER_ID").agg(
         n=("PTS", "size"), team=("TEAM_ABBREVIATION", "last"), name=("PLAYER_NAME", "last"),
+        last_date=("date", "max"), last_sy=("sy", "max"),
         MIN=("MIN", "mean"), PTS=("PTS", "mean"), AST=("AST", "mean"),
         REB=("REB", "mean"), FG3M=("FG3M", "mean"),
         h30=("PTS", lambda s: (s >= 30).mean()), h_ast10=("AST", lambda s: (s >= 10).mean()),
         h_reb12=("REB", lambda s: (s >= 12).mean()), h_3x5=("FG3M", lambda s: (s >= 5).mean()),
     )
+    agg = agg[agg["team"].isin([home, away])]
+
+    keep = pd.Series(True, index=agg.index)
+    for team, grp in agg.groupby("team"):
+        team_last = grp["last_date"].max()
+        recent = grp["last_date"] >= team_last - pd.Timedelta(days=ROSTER_RECENCY_DAYS)
+        if (grp["last_sy"] == sy).any():  # team already has games this season
+            recent &= grp["last_sy"] == sy
+        keep[grp.index] = recent
+    agg = agg[keep]
+
     out_l = {n.strip().lower() for n in out_players}
-    agg = agg[(agg["n"] >= 3) & agg["team"].isin([home, away]) & ~agg["name"].str.lower().isin(out_l)]
+    agg = agg[(agg["n"] >= 3) & ~agg["name"].str.lower().isin(out_l)]
     top = agg.sort_values("MIN", ascending=False).groupby("team").head(TOP_N)
     if top["team"].nunique() < 2:
         raise ValueError("roster missing for one team")
@@ -126,6 +152,11 @@ def live_pf(home, away, game_date, out_players=()):
 
 def clip(p):
     return float(min(max(p, CLIP[0]), CLIP[1]))
+
+
+def blend(target, p_model, p_base):
+    w = BLEND.get(target, BLEND_DEFAULT)
+    return w * p_model + (1 - w) * p_base
 
 
 def sim_override(X):
@@ -161,22 +192,27 @@ def predict(home, away, game_date, out_players=(), models=None):
     sim_p = sim_override(X)
     out = []
     for target in QUESTIONS:
-        if target in sim_p:
-            out.append(clip(sim_p[target]))
-            continue
         spec = models.get(target)
+        if target in sim_p:
+            base = spec.get("p", HARD_DEFAULT) if spec else HARD_DEFAULT
+            out.append(clip(blend(target, sim_p[target], base)))
+            continue
         try:
             if spec is None:
                 p = Q9_RATE if target == "lead_20" else HARD_DEFAULT
             elif spec["type"] == "model" and (Xp if any(f.startswith("pf_") for f in spec["features"]) else X) is not None:
                 Xuse = Xp if any(f.startswith("pf_") for f in spec["features"]) else X
-                p = spec["model"].predict_proba(Xuse[spec["features"]])[:, 1][0]
+                p_model = spec["model"].predict_proba(Xuse[spec["features"]])[:, 1][0]
+                p = blend(target, p_model, spec.get("p", HARD_DEFAULT))
             else:
                 p = spec.get("p", HARD_DEFAULT)
         except Exception:
             traceback.print_exc()
             p = spec.get("p", HARD_DEFAULT) if spec else HARD_DEFAULT
         out.append(clip(p))
+    # consistency: P(either team >= 120) must exceed P(total >= 230) by a margin
+    i_t120, i_tot = QUESTIONS.index("team_120"), QUESTIONS.index("total_230")
+    out[i_t120] = clip(max(out[i_t120], out[i_tot] + 0.05))
     return out
 
 
