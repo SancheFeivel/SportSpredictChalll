@@ -44,6 +44,8 @@ if __name__ == "__main__":
             for attempt in range(5):
                 try:
                     pbp = playbyplayv3.PlayByPlayV3(game_id=gid, timeout=120).get_data_frames()[0]
+                    if len(pbp) < 100:  # real games have 400+ events; partial pbp would give a falsely low lead
+                        raise ValueError("truncated pbp")
                     ml = max_lead(pbp)
                     w.writerow([gid, ml, int(ml >= 20)])
                     f.flush()
@@ -66,5 +68,13 @@ if __name__ == "__main__":
             time.sleep(a.sleep)
     print(f"\nfailed games: {len(failed)} (rerun the script to retry them)")
 
-    q = pd.read_csv(OUT)
+    q = pd.read_csv(OUT, dtype={"GAME_ID": str}).drop_duplicates("GAME_ID")
     print(f"\nq9 rows {len(q)}  lead_20 rate {q['lead_20'].mean():.3f}")
+
+    # sanity: a final margin of 20+ means a 20+ lead existed, so any hit here is a bad label
+    if {"home_pts", "away_pts"} <= set(labels.columns):
+        j = labels.join(q.set_index("GAME_ID")[["max_lead"]], how="inner")
+        bad = j[((j.home_pts - j.away_pts).abs() >= 20) & (j.max_lead < 20)]
+        print(f"final margin 20+ but max_lead<20: {len(bad)} (should be 0)")
+    else:
+        print("sanity check skipped: rerun build_labels.py so labels.csv has home_pts/away_pts")

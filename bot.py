@@ -88,6 +88,7 @@ def build_row(home, away, game_date):
     row["sum_pace"] = row["h_r_pace"] + row["a_r_pace"]
     row["sum_pts"] = row["h_r_PTS"] + row["a_r_PTS"]
     row["sum_3"] = row["h_r_FG3M"] + row["a_r_FG3M"]
+    row["d_absmargin"] = abs(row["d_margin"])
     return pd.DataFrame([row])
 
 

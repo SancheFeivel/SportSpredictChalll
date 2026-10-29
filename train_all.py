@@ -19,7 +19,7 @@ from config import RATE_K, prev_season, season_of
 TEST_SEASON = "2025-26"
 CLIP = (0.02, 0.98)
 # positive in most walk-forward seasons (holdout_check.py). Last three are shrunk: 2026-27 went negative on small n.
-MODEL_OK = {"home_win", "threes_25", "reb_12", "team_120", "total_230", "pts_30", "ast_10"}
+MODEL_OK = {"home_win", "total_230", "threes_25", "team_120", "lead_20"}
 SHRINK = {"total_230": 0.5, "pts_30": 0.5, "ast_10": 0.5}
 PLAYER_Q = {"pts_30", "ast_10", "reb_12", "threes_5"}
 MIN_TEST, MIN_TRAIN = 100, 300

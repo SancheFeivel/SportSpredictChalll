@@ -71,6 +71,7 @@ X["d_rest"] = X["h_rest"] - X["a_rest"]
 X["sum_pace"] = X["h_r_pace"] + X["a_r_pace"]
 X["sum_pts"] = X["h_r_PTS"] + X["a_r_PTS"]
 X["sum_3"] = X["h_r_FG3M"] + X["a_r_FG3M"]
+X["d_absmargin"] = X["d_margin"].abs()
 
 labels = pd.read_csv("data/labels.csv", dtype={"GAME_ID": str}, index_col=0, parse_dates=["date"])
 df = labels.join(X, how="inner")

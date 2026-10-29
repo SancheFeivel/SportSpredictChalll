@@ -4,6 +4,7 @@ import sys
 
 STEPS = [
     "pull_data.py",
+    "pull_pbp.py",
     "build_labels.py",
     "build_features.py",
     "build_player_features.py",
