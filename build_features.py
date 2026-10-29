@@ -1,8 +1,11 @@
-"""Pre-game features per game. Every rolling stat uses shift(1): current game excluded."""
+"""Pre-game features per game. Every rolling stat uses shift(1): current game excluded.
+Early season: rolling form is shrunk toward last season's prior (form.py)."""
 import glob
 import os
 
 import pandas as pd
+
+from form import K_SEASON, attach_prior, season_year
 
 WINDOW = 10
 MIN_GAMES = 5
@@ -22,13 +25,11 @@ def load_teams():
 
 t = load_teams()
 
-# per-game derived stats (post-game values; only used after shift)
 t["opp_pts"] = t["PTS"] - t["PLUS_MINUS"]
 t["poss"] = t["FGA"] + 0.44 * t["FTA"] - t["OREB"] + t["TOV"]
 t["win"] = (t["WL"] == "W").astype(int)
 t["margin"] = t["PLUS_MINUS"]
 
-# attach opponent's 3PM and possessions via the other row of the same game
 opp = t[["GAME_ID", "TEAM_ID", "FG3M", "poss"]]
 m = t.merge(opp, on="GAME_ID", suffixes=("", "_opp"))
 m = m[m["TEAM_ID"] != m["TEAM_ID_opp"]].copy()
@@ -37,8 +38,8 @@ m["tot_3"] = m["FG3M"] + m["FG3M_opp"]
 m["pace"] = (m["poss"] + m["poss_opp"]) / 2
 
 m = m.sort_values(["TEAM_ID", "date"]).reset_index(drop=True)
+m["sy"] = season_year(m["date"])
 
-# rolling pre-game form (crosses season boundary on purpose; early season uses last year's tail)
 ROLL = ["PTS", "opp_pts", "FG3M", "FG3M_opp", "pace", "win", "margin", "tot_pts", "tot_3"]
 g = m.groupby("TEAM_ID")
 for c in ROLL:
@@ -46,7 +47,14 @@ for c in ROLL:
         lambda s: s.shift(1).rolling(WINDOW, min_periods=MIN_GAMES).mean()
     )
 
-# rest: days since previous game (known before tip), 7 = long rest / season start
+# shrink toward prior: weight on current form = gs / (gs + K), gs = games played this season
+pri = attach_prior(m, ROLL)
+gs = m.groupby(["TEAM_ID", "sy"]).cumcount()
+w = gs / (gs + K_SEASON)
+for c in ROLL:
+    raw = m[f"r_{c}"]
+    m[f"r_{c}"] = (w * raw + (1 - w) * pri[c]).where(pri[c].notna(), raw)
+
 m["rest"] = g["date"].diff().dt.days.fillna(7).clip(upper=7)
 m["b2b"] = (m["rest"] <= 1).astype(int)
 m["games_before"] = g.cumcount()
@@ -57,7 +65,6 @@ home = m[m["is_home"]].set_index("GAME_ID")[FEATS].add_prefix("h_")
 away = m[~m["is_home"]].set_index("GAME_ID")[FEATS].add_prefix("a_")
 X = home.join(away, how="inner")
 
-# differences + combined-game features
 X["d_win"] = X["h_r_win"] - X["a_r_win"]
 X["d_margin"] = X["h_r_margin"] - X["a_r_margin"]
 X["d_rest"] = X["h_rest"] - X["a_rest"]

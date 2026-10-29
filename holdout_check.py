@@ -46,3 +46,4 @@ print("edge vs recent-rate baseline, points per game (positive = model better)\n
 print(res.round(2).to_string())
 ok = res.drop(columns="mean").apply(lambda r: r.dropna().gt(0).all() and r.notna().any(), axis=1)
 print("\nrows with all graded seasons positive:", list(res.index[ok]))
+

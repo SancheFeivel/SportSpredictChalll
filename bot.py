@@ -1,43 +1,29 @@
 """predict(home, away, date) -> 10 probabilities in contest order (Q1..Q10).
 
 Usage: python bot.py --home BOS --away NYK --date 2026-11-02
-Fallback chain per question: model -> constant rate from models.joblib -> hard default.
+Fallback chain per question: sim (if validated) -> model -> constant rate -> hard default.
+Early-season form is shrunk toward last season's prior (form.py), same as training.
 Never returns nothing, never returns 0 or 100.
 """
 import argparse
 import glob
+import json
 import traceback
 
 import joblib
 import pandas as pd
 
+import form
+
 WINDOW = 10
 CLIP = (0.02, 0.98)
-Q9_RATE = 0.50  # only used if models.joblib has no lead_20 (run pull_pbp.py + refresh.py)
+Q9_RATE = 0.50  # TODO: replace with measured rate once play-by-play labels exist
 HARD_DEFAULT = 0.50
 
-# contest order Q1..Q10 -> target name
 QUESTIONS = [
     "home_win", "total_230", "threes_25", "pts_30", "ast_10",
     "reb_12", "team_120", "margin_10", "lead_20", "threes_5",
 ]
-
-
-def _default(target):
-    return Q9_RATE if target == "lead_20" else HARD_DEFAULT
-
-
-def clip(p):
-    return float(min(max(p, CLIP[0]), CLIP[1]))
-
-
-def fallback(models=None):
-    """Constant-rate forecasts for all 10 questions. Use when everything else failed."""
-    try:
-        models = models or joblib.load("data/models.joblib")
-    except Exception:
-        models = {}
-    return [clip(models.get(t, {}).get("p", _default(t))) for t in QUESTIONS]
 
 
 def load_team_logs():
@@ -53,18 +39,26 @@ def load_team_logs():
     m["tot_pts"] = m["PTS"] + m["opp_pts"]
     m["tot_3"] = m["FG3M"] + m["FG3M_opp"]
     m["pace"] = (m["poss"] + m["poss_opp"]) / 2
+    m["sy"] = form.season_year(m["date"])
     return m.sort_values("date")
 
 
 ROLL = ["PTS", "opp_pts", "FG3M", "FG3M_opp", "pace", "win", "margin", "tot_pts", "tot_3"]
 
 
-def team_state(logs, abbr, game_date):
-    """Form from the last WINDOW games strictly before game_date."""
-    g = logs[(logs["TEAM_ABBREVIATION"] == abbr) & (logs["date"] < game_date)].tail(WINDOW)
+def team_state(logs, abbr, game_date, pri):
+    """Form from last WINDOW games strictly before game_date, shrunk early in the season."""
+    allg = logs[(logs["TEAM_ABBREVIATION"] == abbr) & (logs["date"] < game_date)]
+    g = allg.tail(WINDOW)
     if len(g) < 5:
         raise ValueError(f"not enough games for {abbr}")
     s = {f"r_{c}": g[c].mean() for c in ROLL}
+    sy = form.season_year_of(game_date)
+    gs = int((allg["sy"] == sy).sum())
+    p = form.prior_for(pri, int(allg["TEAM_ID"].iloc[-1]), sy, ROLL)
+    if p is not None:
+        w = gs / (gs + form.K_SEASON)
+        s = {k: w * v + (1 - w) * float(p[k[2:]]) for k, v in s.items()}
     rest = min((game_date - g["date"].iloc[-1]).days, 7)
     s["rest"] = rest
     s["b2b"] = int(rest <= 1)
@@ -73,8 +67,9 @@ def team_state(logs, abbr, game_date):
 
 def build_row(home, away, game_date):
     logs = load_team_logs()
+    pri = form.prior_frame(logs, ROLL)
     d = pd.Timestamp(game_date)
-    h, a = team_state(logs, home, d), team_state(logs, away, d)
+    h, a = team_state(logs, home, d, pri), team_state(logs, away, d, pri)
     row = {f"h_{k}": v for k, v in h.items()}
     row.update({f"a_{k}": v for k, v in a.items()})
     row["d_win"] = row["h_r_win"] - row["a_r_win"]
@@ -129,6 +124,26 @@ def live_pf(home, away, game_date, out_players=()):
     }])
 
 
+def clip(p):
+    return float(min(max(p, CLIP[0]), CLIP[1]))
+
+
+def sim_override(X):
+    """Joint-simulator probs for questions that passed sim_check.py. {} if none/unavailable."""
+    try:
+        ok = json.load(open("data/sim_ok.json"))
+        if not ok or X is None:
+            return {}
+        import sim
+        row = sim.probs(joblib.load("data/sim.joblib"), X).iloc[0]
+        return {t: float(row[t]) for t in ok}
+    except FileNotFoundError:
+        return {}
+    except Exception:
+        traceback.print_exc()
+        return {}
+
+
 def predict(home, away, game_date, out_players=(), models=None):
     models = models or joblib.load("data/models.joblib")
     try:
@@ -143,24 +158,38 @@ def predict(home, away, game_date, out_players=(), models=None):
         except Exception:
             traceback.print_exc()  # player questions fall back to constants
 
+    sim_p = sim_override(X)
     out = []
     for target in QUESTIONS:
+        if target in sim_p:
+            out.append(clip(sim_p[target]))
+            continue
         spec = models.get(target)
-        default = _default(target)
         try:
             if spec is None:
-                p = default
+                p = Q9_RATE if target == "lead_20" else HARD_DEFAULT
+            elif spec["type"] == "model" and (Xp if any(f.startswith("pf_") for f in spec["features"]) else X) is not None:
+                Xuse = Xp if any(f.startswith("pf_") for f in spec["features"]) else X
+                p = spec["model"].predict_proba(Xuse[spec["features"]])[:, 1][0]
             else:
-                Xuse = Xp if any(f.startswith("pf_") for f in spec.get("features", [])) else X
-                if spec["type"] == "model" and Xuse is not None:
-                    p = spec["model"].predict_proba(Xuse[spec["features"]])[:, 1][0]
-                    w = spec.get("w", 1.0)  # shrink toward base rate on unstable questions
-                    p = w * p + (1.0 - w) * spec.get("p", default)
-                else:  # const spec, or model spec with failed features
-                    p = spec.get("p", default)
+                p = spec.get("p", HARD_DEFAULT)
         except Exception:
             traceback.print_exc()
-            p = spec.get("p", default) if spec else default
+            p = spec.get("p", HARD_DEFAULT) if spec else HARD_DEFAULT
+        out.append(clip(p))
+    return out
+
+
+def fallback_probs(models=None):
+    """Per-question base rates from models.joblib. Used when predict() blows up. Better than flat 0.5."""
+    try:
+        models = models or joblib.load("data/models.joblib")
+    except Exception:
+        return [HARD_DEFAULT] * len(QUESTIONS)
+    out = []
+    for t in QUESTIONS:
+        spec = models.get(t)
+        p = spec.get("p", HARD_DEFAULT) if spec else (Q9_RATE if t == "lead_20" else HARD_DEFAULT)
         out.append(clip(p))
     return out
 

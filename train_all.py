@@ -1,5 +1,7 @@
 """Train one model per question. Keep model only if it is in MODEL_OK and beats the recent-rate baseline.
-SHRINK pulls unstable questions toward the base rate: p = w*model + (1-w)*rate."""
+
+SHRINK pulls unstable questions toward the base rate: p = w*model + (1-w)*rate.
+Base rate (const + fallback) = current season blended with last 2 seasons, weight grows with games played."""
 import joblib
 import numpy as np
 import pandas as pd
@@ -7,6 +9,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+
+from config import RATE_K, prev_season, season_of
 
 TEST_SEASON = "2025-26"
 CLIP = (0.02, 0.98)
@@ -27,6 +31,21 @@ feats = [c for c in df.columns if c.startswith(("h_r_", "a_r_", "d_", "sum_"))] 
 ]
 pf_feats = [c for c in df.columns if c.startswith("pf_")]
 
+CUR = season_of(pd.Timestamp.now())
+PRIOR_SEASONS = [prev_season(CUR), prev_season(prev_season(CUR))]
+
+
+def live_rate(d, t):
+    """Current-season rate blended with last 2 seasons; weight = n/(n+RATE_K)."""
+    pr = d[d.season.isin(PRIOR_SEASONS)][t].mean()
+    if np.isnan(pr):  # e.g. lead_20 labels cover few seasons
+        pr = d[t].mean()
+    c = d[d.season == CUR][t]
+    if len(c) == 0:
+        return float(pr)
+    w = len(c) / (len(c) + RATE_K)
+    return float(w * c.mean() + (1 - w) * pr)
+
 
 def new_model():
     return make_pipeline(StandardScaler(), LogisticRegression(C=0.05, max_iter=2000))
@@ -39,8 +58,7 @@ for t in TARGETS:
         continue
     d = df.dropna(subset=[t])
     train, test = d[d.season < TEST_SEASON], d[d.season == TEST_SEASON]
-    recent_all = sorted(d.season.unique())[-2:]
-    rate_all = float(d[d.season.isin(recent_all)][t].mean())
+    rate_all = live_rate(d, t)
 
     if len(train) < MIN_TRAIN or len(test) < MIN_TEST:
         saved[t] = {"type": "const", "p": rate_all}
@@ -70,5 +88,7 @@ for t in TARGETS:
         saved[t] = {"type": "const", "p": rate_all}
 
 print(pd.DataFrame(rows).to_string(index=False))
+import track
+track.log_run(saved, rows, n_games=len(df))
 joblib.dump(saved, "data/models.joblib")
 print("\nsaved data/models.joblib")

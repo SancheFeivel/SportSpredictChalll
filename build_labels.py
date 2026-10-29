@@ -27,6 +27,8 @@ g["date"] = pd.to_datetime(home["GAME_DATE"])
 g["season"] = home["season"]
 g["home_team"] = home["TEAM_ABBREVIATION"]
 g["away_team"] = away["TEAM_ABBREVIATION"]
+g["home_pts"] = home["PTS"]  # needed by sim.py
+g["away_pts"] = away["PTS"]
 
 # Q1-Q3, Q7, Q8
 g["home_win"] = (home["WL"] == "W").astype(int)

@@ -80,7 +80,7 @@ if __name__ == "__main__":
             probs = bot.predict(home, away, a.date, out_players=out_players)
         except Exception:
             err = traceback.format_exc().strip().splitlines()[-1]
-            probs = [0.5] * 10  # last resort, never submit nothing
+            probs = bot.fallback_probs()  # base rates, never submit nothing
         print(f"{away} @ {home}  " + " ".join(f"{p * 100:4.0f}" for p in probs) + (f"  ERR {err}" if err else ""))
         append_log([manila_now(), gid, a.date, home, away, "|".join(out_players)] + [round(p, 4) for p in probs] + [err])
         # bot.submit(gid, probs)  # enable once API docs known
