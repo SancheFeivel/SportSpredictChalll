@@ -11,14 +11,19 @@ Rules (the Status column is unreliable, so we read dates and comments):
   QUESTIONABLE  fresh comment (within 1 day of game date) says questionable -> written as "# Q:" comment
   else       treated as available
 Never overwrites out.txt if the scrape fails or looks empty: the old file stays.
+The header line records the game date; run_today.py ignores the file if that date is wrong.
+After writing, lists names that match no PLAYER_NAME in data/P_*.csv (silent mismatches).
 """
 import argparse
+import os
 import re
 import sys
 from datetime import date, datetime, timedelta
 
 import requests
 from bs4 import BeautifulSoup
+
+import names
 
 URL = "https://www.espn.ph/nba/injuries"
 OUT_FILE = "out.txt"
@@ -49,7 +54,6 @@ def classify(ret_txt, comment, game_date):
     m = re.match(r"\s*(\d{1,2} [A-Za-z]{3}):\s*(.*)", comment)
     c_date, c_text = (None, comment.lower())
     if m:
-        # comment date: latest such date not in the future relative to game date
         c_date = parse_dm(m.group(1), game_date - timedelta(days=330))
         c_text = m.group(2).lower()
 
@@ -64,10 +68,8 @@ def classify(ret_txt, comment, game_date):
         if "ruled out" in c_text or "will not play" in c_text or "won't play" in c_text:
             return "out"
 
-    # long-term: return more than 2 days after the game
     if ret and ret > game_date + timedelta(days=2):
         return "out"
-    # short-term, no fresh comment saying otherwise: return date after game = still out
     if ret and ret > game_date:
         return "out"
     return "ok"
@@ -108,14 +110,28 @@ if __name__ == "__main__":
             out.append((team, name))
         elif k == "questionable":
             quest.append((team, name))
+    out = sorted(set(out))
+    quest = sorted(set(quest))
 
-    with open(OUT_FILE, "w", encoding="utf-8") as f:
+    tmp = OUT_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
         f.write(f"# generated {datetime.now():%Y-%m-%d %H:%M} for game date {game_date}\n")
-        for team, name in sorted(out):
+        for team, name in out:
             f.write(f"{name}\n")
-        for team, name in sorted(quest):
+        for team, name in quest:
             f.write(f"# Q: {name} ({team})  <- move up to drop him\n")
+    os.replace(tmp, OUT_FILE)  # atomic: never leaves a half-written file
 
     print(f"{len(rows)} rows scraped -> {len(out)} out, {len(quest)} questionable (commented) for {game_date}")
-    print("\nOUT:", ", ".join(n for _, n in sorted(out)))
-    print("\nQUESTIONABLE:", ", ".join(n for _, n in sorted(quest)))
+    print("\nOUT:", ", ".join(n for _, n in out))
+    print("\nQUESTIONABLE:", ", ".join(n for _, n in quest))
+
+    try:
+        bad = names.unmatched([n for _, n in out])
+        if bad:
+            print(f"\nNO MATCH in data/P_*.csv ({len(bad)}): " + ", ".join(bad))
+            print("Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.")
+        else:
+            print("\nall OUT names match player logs")
+    except Exception as e:
+        print(f"\n(name-match check skipped: {e})")

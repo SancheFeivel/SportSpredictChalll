@@ -1,4 +1,4 @@
-# generated 2026-10-29 15:59 for game date 2026-10-29
+# generated 2026-10-31 07:15 for game date 2026-10-30
 Henri Veesaar
 Mouhamed Gueye
 Devin Carter
@@ -8,9 +8,9 @@ Coby White
 Grant Williams
 Kon Knueppel
 Kylan Boswell
+Dailyn Swain
 Nic Claxton
-Patrick Williams
-Tobe Awaka
+Jaylon Tyson
 Dereck Lively II
 Naji Marshall
 Santi Aldama
@@ -22,12 +22,10 @@ Julian Strawther
 Spencer Jones
 Isaiah Joe
 Jalen Duren
-Gui Santos
 Jimmy Butler III
 Kristaps Porzingis
 Moses Moody
-Alperen Sengun
-Marcus Smart
+Reed Sheppard
 Steven Adams
 Ben Sheppard
 Ivica Zubac
@@ -41,14 +39,15 @@ Max Strus
 Rui Hachimura
 Yanic Konan Niederhauser
 Adou Thiero
-Cameron Carr
-Luka Doncic
 Ziaire Williams
+Quinten Post
 Simone Fontecchio
 Anthony Edwards
 Donte DiVincenzo
+Jordan Poole
 Yves Missi
 Jose Alvarado
+Karl-Anthony Towns
 Alex Caruso
 Cason Wallace
 Chet Holmgren
@@ -63,8 +62,12 @@ Paolo Banchero
 Ariel Hukporti
 Dominick Barlow
 Jabari Walker
+Jaylen Brown
 Tacko Fall
 Mark Williams
+Chris Youngblood
+Ja Morant
+Robert Williams III
 Shaedon Sharpe
 Ben Simmons
 Dylan Cardwell
@@ -80,6 +83,10 @@ Lauri Markkanen
 Trey Alexander
 Jamir Watkins
 Justin Champagnie
-Tre Johnson
 Tristan Vukcevic
+# Q: Meleek Thomas (Cleveland Cavaliers)  <- move up to drop him
+# Q: Gui Santos (Golden State Warriors)  <- move up to drop him
+# Q: Alperen Sengun (Houston Rockets)  <- move up to drop him
+# Q: Marcus Smart (Houston Rockets)  <- move up to drop him
+# Q: Obi Toppin (Indiana Pacers)  <- move up to drop him
 # Q: Oso Ighodaro (Phoenix Suns)  <- move up to drop him

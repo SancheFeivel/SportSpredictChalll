@@ -5,7 +5,7 @@ Base rate (const + fallback) = current season blended with last 2 seasons, weigh
 import hashlib
 import json
 import os
-
+import track
 import joblib
 import numpy as np
 import pandas as pd
@@ -124,6 +124,7 @@ for t in TARGETS:
         saved[t] = {"type": "const", "p": rate_all}
 
 print(pd.DataFrame(rows).to_string(index=False))
+track.log_run(saved, rows, n_games=len(df))
 record_run(saved, df)
 joblib.dump(saved, "data/models.joblib")
 print("\nsaved data/models.joblib")

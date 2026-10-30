@@ -4,6 +4,7 @@ Usage: python bot.py --home BOS --away NYK --date 2026-11-02
 Fallback chain per question: sim (if validated) -> blended model -> constant rate -> hard default.
 Model output is blended with the recent base rate (BLEND) to cut early-season overconfidence.
 Early-season form is shrunk toward last season's prior (form.py), same as training.
+Injured names are matched through names.norm (accents, Jr./III, punctuation ignored).
 Never returns nothing, never returns 0 or 100.
 """
 import argparse
@@ -15,6 +16,7 @@ import joblib
 import pandas as pd
 
 import form
+import names
 
 WINDOW = 10
 CLIP = (0.02, 0.98)
@@ -35,8 +37,13 @@ QUESTIONS = [
     "reb_12", "team_120", "margin_10", "lead_20", "threes_5",
 ]
 
+ROLL = ["PTS", "opp_pts", "FG3M", "FG3M_opp", "pace", "win", "margin", "tot_pts", "tot_3"]
+_CACHE = {}  # team logs + prior are loaded once per process, not once per game
+
 
 def load_team_logs():
+    if "tl" in _CACHE:
+        return _CACHE["tl"]
     t = pd.concat([pd.read_csv(f, dtype={"GAME_ID": str}) for f in sorted(glob.glob("data/T_*.csv"))])
     t["date"] = pd.to_datetime(t["GAME_DATE"])
     t["opp_pts"] = t["PTS"] - t["PLUS_MINUS"]
@@ -50,10 +57,8 @@ def load_team_logs():
     m["tot_3"] = m["FG3M"] + m["FG3M_opp"]
     m["pace"] = (m["poss"] + m["poss_opp"]) / 2
     m["sy"] = form.season_year(m["date"])
-    return m.sort_values("date")
-
-
-ROLL = ["PTS", "opp_pts", "FG3M", "FG3M_opp", "pace", "win", "margin", "tot_pts", "tot_3"]
+    _CACHE["tl"] = m.sort_values("date")
+    return _CACHE["tl"]
 
 
 def team_state(logs, abbr, game_date, pri):
@@ -77,7 +82,9 @@ def team_state(logs, abbr, game_date, pri):
 
 def build_row(home, away, game_date):
     logs = load_team_logs()
-    pri = form.prior_frame(logs, ROLL)
+    if "pri" not in _CACHE:
+        _CACHE["pri"] = form.prior_frame(logs, ROLL)
+    pri = _CACHE["pri"]
     d = pd.Timestamp(game_date)
     h, a = team_state(logs, home, d, pri), team_state(logs, away, d, pri)
     row = {f"h_{k}": v for k, v in h.items()}
@@ -93,16 +100,16 @@ def build_row(home, away, game_date):
 
 
 TOP_N = 8
-_PLAYER_CACHE = {}
 
 
 def load_player_logs():
-    if "pl" not in _PLAYER_CACHE:
+    if "pl" not in _CACHE:
         pl = pd.concat([pd.read_csv(f, dtype={"GAME_ID": str}) for f in sorted(glob.glob("data/P_*.csv"))])
         pl["date"] = pd.to_datetime(pl["GAME_DATE"])
         pl["sy"] = form.season_year(pl["date"])
-        _PLAYER_CACHE["pl"] = pl.sort_values("date")
-    return _PLAYER_CACHE["pl"]
+        pl["name_key"] = pl["PLAYER_NAME"].map(names.norm)
+        _CACHE["pl"] = pl.sort_values("date")
+    return _CACHE["pl"]
 
 
 def live_pf(home, away, game_date, out_players=()):
@@ -116,7 +123,7 @@ def live_pf(home, away, game_date, out_players=()):
     prior = pl[pl["date"] < d]
     last10 = prior.groupby("PLAYER_ID").tail(WINDOW)
     agg = last10.groupby("PLAYER_ID").agg(
-        n=("PTS", "size"), team=("TEAM_ABBREVIATION", "last"), name=("PLAYER_NAME", "last"),
+        n=("PTS", "size"), team=("TEAM_ABBREVIATION", "last"), name=("name_key", "last"),
         last_date=("date", "max"), last_sy=("sy", "max"),
         MIN=("MIN", "mean"), PTS=("PTS", "mean"), AST=("AST", "mean"),
         REB=("REB", "mean"), FG3M=("FG3M", "mean"),
@@ -134,8 +141,8 @@ def live_pf(home, away, game_date, out_players=()):
         keep[grp.index] = recent
     agg = agg[keep]
 
-    out_l = {n.strip().lower() for n in out_players}
-    agg = agg[(agg["n"] >= 3) & ~agg["name"].str.lower().isin(out_l)]
+    out_l = {names.norm(n) for n in out_players}
+    agg = agg[(agg["n"] >= 3) & ~agg["name"].isin(out_l)]
     top = agg.sort_values("MIN", ascending=False).groupby("team").head(TOP_N)
     if top["team"].nunique() < 2:
         raise ValueError("roster missing for one team")
@@ -163,7 +170,8 @@ def blend(target, p_model, p_base):
 def sim_override(X):
     """Joint-simulator probs for questions that passed sim_check.py. {} if none/unavailable."""
     try:
-        ok = json.load(open("data/sim_ok.json"))
+        with open("data/sim_ok.json") as f:
+            ok = json.load(f)
         if not ok or X is None:
             return {}
         import sim
@@ -201,10 +209,13 @@ def predict(home, away, game_date, out_players=(), models=None):
         try:
             if spec is None:
                 p = Q9_RATE if target == "lead_20" else HARD_DEFAULT
-            elif spec["type"] == "model" and (Xp if any(f.startswith("pf_") for f in spec["features"]) else X) is not None:
+            elif spec["type"] == "model":
                 Xuse = Xp if any(f.startswith("pf_") for f in spec["features"]) else X
-                p_model = spec["model"].predict_proba(Xuse[spec["features"]])[:, 1][0]
-                p = blend(target, p_model, spec.get("p", HARD_DEFAULT))
+                if Xuse is None:
+                    p = spec.get("p", HARD_DEFAULT)
+                else:
+                    p_model = spec["model"].predict_proba(Xuse[spec["features"]])[:, 1][0]
+                    p = blend(target, p_model, spec.get("p", HARD_DEFAULT))
             else:
                 p = spec.get("p", HARD_DEFAULT)
         except Exception:

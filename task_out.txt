@@ -1,0 +1,144 @@
+[2026-10-29 18:30:27 MNL] auto.py started
+C:\Users\annam\OneDrive\Desktop\sports predicr\auto.py:101: DeprecationWarning: ScoreboardV2 has known issues with line score data for 2025-26 season games (October 22 - December 25, 2025). Please use ScoreboardV3 instead. ScoreboardV3 is fully backward compatible and works for all historical seasons. See: https://github.com/swar/nba_api/issues/596
+  gh = scoreboardv2.ScoreboardV2(game_date=d, timeout=60).get_data_frames()[0]
+[2026-10-29 18:30:29 MNL] 2026-10-29: 3 games, 3 tip times, 5 quick runs
+[2026-10-29 18:30:29 MNL]   quick @ 17:00 ET = 10-30 05:00 MNL
+[2026-10-29 18:30:29 MNL]   quick @ 19:00 ET = 10-30 07:00 MNL
+[2026-10-29 18:30:29 MNL]   quick @ 19:45 ET = 10-30 07:45 MNL
+[2026-10-29 18:30:29 MNL]   quick @ 21:00 ET = 10-30 09:00 MNL
+[2026-10-29 18:30:29 MNL]   quick @ 21:45 ET = 10-30 09:45 MNL
+[2026-10-29 18:31:43 MNL] stopped
+[2026-10-29 18:50:33 MNL] auto.py started
+C:\Users\annam\OneDrive\Desktop\sports predicr\auto.py:101: DeprecationWarning: ScoreboardV2 has known issues with line score data for 2025-26 season games (October 22 - December 25, 2025). Please use ScoreboardV3 instead. ScoreboardV3 is fully backward compatible and works for all historical seasons. See: https://github.com/swar/nba_api/issues/596
+  gh = scoreboardv2.ScoreboardV2(game_date=d, timeout=60).get_data_frames()[0]
+[2026-10-29 18:50:34 MNL] 2026-10-29: 3 games, 3 tip times, 5 quick runs
+[2026-10-29 18:50:34 MNL]   quick @ 17:00 ET = 10-30 05:00 MNL
+[2026-10-29 18:50:34 MNL]   quick @ 19:00 ET = 10-30 07:00 MNL
+[2026-10-29 18:50:34 MNL]   quick @ 19:45 ET = 10-30 07:45 MNL
+[2026-10-29 18:50:34 MNL]   quick @ 21:00 ET = 10-30 09:00 MNL
+[2026-10-29 18:50:34 MNL]   quick @ 21:45 ET = 10-30 09:45 MNL
+[2026-10-29 18:53:20 MNL] auto.py started
+C:\Users\annam\OneDrive\Desktop\sports predicr\auto.py:101: DeprecationWarning: ScoreboardV2 has known issues with line score data for 2025-26 season games (October 22 - December 25, 2025). Please use ScoreboardV3 instead. ScoreboardV3 is fully backward compatible and works for all historical seasons. See: https://github.com/swar/nba_api/issues/596
+  gh = scoreboardv2.ScoreboardV2(game_date=d, timeout=60).get_data_frames()[0]
+[2026-10-29 18:53:26 MNL] 2026-10-29: 3 games, 3 tip times, 5 quick runs
+[2026-10-29 18:53:26 MNL]   quick @ 17:00 ET = 10-30 05:00 MNL
+[2026-10-29 18:53:26 MNL]   quick @ 19:00 ET = 10-30 07:00 MNL
+[2026-10-29 18:53:26 MNL]   quick @ 19:45 ET = 10-30 07:45 MNL
+[2026-10-29 18:53:26 MNL]   quick @ 21:00 ET = 10-30 09:00 MNL
+[2026-10-29 18:53:26 MNL]   quick @ 21:45 ET = 10-30 09:45 MNL
+[2026-10-29 21:00:00 MNL] run: live.py --date 2026-10-29
+[2026-10-29 21:00:26 MNL] output tail:
+saved data/models.joblib
+(6s)
+
+refresh done
+
+=== injuries.py --date 2026-10-29 ===
+86 rows scraped -> 83 out, 1 questionable (commented) for 2026-10-29
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Patrick Williams, Tobe Awaka, Dereck Lively II, Naji Marshall, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Alpha Diallo, Cameron Johnson, Julian Strawther, Spencer Jones, Isaiah Joe, Jalen Duren, Gui Santos, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Alperen Sengun, Marcus Smart, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Cameron Carr, Luka Doncic, Ziaire Williams, Simone Fontecchio, Anthony Edwards, Donte DiVincenzo, Yves Missi, Jose Alvarado, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Tacko Fall, Mark Williams, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tre Johnson, Tristan Vukcevic
+
+QUESTIONABLE: Oso Ighodaro
+
+NO MATCH in data/P_*.csv (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-29 ===
+2026-10-29: 3 games, 83 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CLE @ ATL    50   55   63   56   41   60   60   52   48   60
+SAC @ NOP    54   53   46   56   41   60   59   53   48   60
+MEM @ POR    71   55   61   56   41   60   60   56   50   60
+
+live done
+[2026-10-30 04:59:59 MNL] run: live.py --date 2026-10-29 --quick
+[2026-10-30 05:00:05 MNL] output tail:
+=== injuries.py --date 2026-10-29 ===
+89 rows scraped -> 85 out, 3 questionable (commented) for 2026-10-29
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Patrick Williams, Tobe Awaka, Dereck Lively II, Naji Marshall, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Alpha Diallo, Cameron Johnson, Julian Strawther, Spencer Jones, Isaiah Joe, Jalen Duren, Gui Santos, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Alperen Sengun, Marcus Smart, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Cameron Carr, Luka Doncic, Ziaire Williams, Simone Fontecchio, Anthony Edwards, Donte DiVincenzo, Jordan Poole, Yves Missi, Jose Alvarado, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Tacko Fall, Mark Williams, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tre Johnson, Tristan Vukcevic
+
+QUESTIONABLE: Jaylon Tyson, Meleek Thomas, Oso Ighodaro
+
+NO MATCH in data/P_*.csv (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-29 ===
+2026-10-29: 3 games, 85 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CLE @ ATL    50   55   63   56   41   60   60   52   48   60
+SAC @ NOP    54   53   46   56   41   60   59   53   48   60
+MEM @ POR    71   55   61   56   41   60   60   56   50   60
+
+live done
+[2026-10-30 06:59:59 MNL] lock held by another run, skipping this slot
+[2026-10-30 07:44:59 MNL] lock held by another run, skipping this slot
+[2026-10-30 10:49:28 MNL] run: live.py --date 2026-10-29 --quick
+[2026-10-30 10:49:33 MNL] output tail:
+=== injuries.py --date 2026-10-29 ===
+94 rows scraped -> 78 out, 16 questionable (commented) for 2026-10-29
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Meleek Thomas, Dereck Lively II, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Julian Strawther, Spencer Jones, Jalen Duren, Gui Santos, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Aaron Nesmith, Andrew Nembhard, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Yanic Konan Niederhauser, Adou Thiero, Cameron Carr, Anthony Edwards, Donte DiVincenzo, Dejounte Murray, Jordan Poole, Yves Missi, Jose Alvarado, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Tacko Fall, Mark Williams, Chris Youngblood, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Dennis Schroder, Jalen Smith, Patrick Williams, Tobe Awaka, Naji Marshall, Alpha Diallo, Cameron Johnson, Isaiah Joe, Alperen Sengun, Marcus Smart, Rui Hachimura, Ziaire Williams, Simone Fontecchio, Jaylen Brown, Oso Ighodaro, Tre Johnson
+
+NO MATCH in data/P_*.csv (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-29 ===
+2026-10-29: 3 games, 78 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CLE @ ATL  skipped (already started or final)
+SAC @ NOP  skipped (already started or final)
+MEM @ POR  skipped (already started or final)
+
+live done
+[2026-10-30 10:49:33 MNL] 2026-10-29 done. sleeping 1.3h
+^C[2026-10-30 21:31:34 MNL] auto.py started
+C:\Users\annam\OneDrive\Desktop\sports predicr\auto.py:101: DeprecationWarning: ScoreboardV2 has known issues with line score data for 2025-26 season games (October 22 - December 25, 2025). Please use ScoreboardV3 instead. ScoreboardV3 is fully backward compatible and works for all historical seasons. See: https://github.com/swar/nba_api/issues/596
+  gh = scoreboardv2.ScoreboardV2(game_date=d, timeout=60).get_data_frames()[0]
+[2026-10-30 21:31:38 MNL] 2026-10-30: 10 games, 10 tip times, 11 quick runs
+[2026-10-30 21:31:38 MNL]   quick @ 16:00 ET = 10-31 04:00 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 16:30 ET = 10-31 04:30 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 17:00 ET = 10-31 05:00 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 18:00 ET = 10-31 06:00 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 18:30 ET = 10-31 06:30 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 18:45 ET = 10-31 06:45 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 19:00 ET = 10-31 07:00 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 19:15 ET = 10-31 07:15 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 19:45 ET = 10-31 07:45 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 21:00 ET = 10-31 09:00 MNL
+[2026-10-30 21:31:38 MNL]   quick @ 21:45 ET = 10-31 09:45 MNL
+[2026-10-30 21:31:38 MNL] run: live.py --date 2026-10-30
+[2026-10-30 21:32:19 MNL] output tail:
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Meleek Thomas, Dereck Lively II, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Julian Strawther, Spencer Jones, Jalen Duren, Gui Santos, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Yanic Konan Niederhauser, Adou Thiero, Cameron Carr, Quinten Post, Anthony Edwards, Donte DiVincenzo, Dejounte Murray, Jordan Poole, Yves Missi, Jose Alvarado, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Tacko Fall, Mark Williams, Chris Youngblood, Ja Morant, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Dennis Schroder, Jalen Smith, Patrick Williams, Tobe Awaka, Naji Marshall, Alpha Diallo, Cameron Johnson, Isaiah Joe, Alperen Sengun, Marcus Smart, Rui Hachimura, Ziaire Williams, Simone Fontecchio, Jaylen Brown, Oso Ighodaro, Tre Johnson
+
+NO MATCH in data/P_*.csv (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-30 ===
+2026-10-30: 10 games, 78 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (10): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Cameron Carr, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CHA @ WAS    33   50   61   56   41   61   56   55   48   60
+CHI @ BOS    80   54   65   56   41   61   62   59   53   60
+DET @ BKN    26   49   55   56   41   61   55   57   48   60
+NYK @ PHI    42   45   54   56   41   61   51   53   45   60
+ORL @ TOR    67   49   46   56   41   61   56   54   47   60
+IND @ MIA    66   58   59   56   41   61   63   54   47   60
+HOU @ DAL    37   53   48   56   41   61   58   54   46   60
+LAC @ MIN    61   51   55   56   41   61   56   53   46   60
+LAL @ GSW    45   49   56   56   41   61   54   53   48   60
+DEN @ PHX    45   54   61   56   41   61   59   53   48   60
+
+live done
