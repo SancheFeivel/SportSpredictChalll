@@ -142,3 +142,141 @@ LAL @ GSW    45   49   56   56   41   61   54   53   48   60
 DEN @ PHX    45   54   61   56   41   61   59   53   48   60
 
 live done
+[2026-10-31 03:59:59 MNL] run: live.py --date 2026-10-30 --quick
+[2026-10-31 04:00:06 MNL] output tail:
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Meleek Thomas, Dereck Lively II, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Cameron Johnson, Julian Strawther, Spencer Jones, Jalen Duren, Gui Santos, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Quinten Post, Anthony Edwards, Donte DiVincenzo, Dejounte Murray, Jordan Poole, Yves Missi, Jose Alvarado, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Tacko Fall, Mark Williams, Chris Youngblood, Ja Morant, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Noah Clowney, Jalen Smith, Tobe Awaka, Naji Marshall, Alpha Diallo, Isaiah Joe, Alperen Sengun, Marcus Smart, Ziaire Williams, Simone Fontecchio, Jaylen Brown, Oso Ighodaro, Tre Johnson
+
+NO MATCH in data/P_*.csv (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-30 ===
+2026-10-30: 10 games, 79 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CHA @ WAS    33   50   61   56   41   61   56   55   48   60
+CHI @ BOS    80   54   65   56   41   61   62   59   53   60
+DET @ BKN    26   49   55   56   41   61   55   57   48   60
+NYK @ PHI    42   45   54   56   41   61   51   53   45   60
+ORL @ TOR    67   49   46   56   41   61   56   54   47   60
+IND @ MIA    66   58   59   56   41   61   63   54   47   60
+HOU @ DAL    37   53   48   56   41   61   58   54   46   60
+LAC @ MIN    61   51   55   56   41   61   56   53   46   60
+LAL @ GSW    45   49   56   56   41   61   54   53   48   60
+DEN @ PHX    45   54   61   56   41   61   59   53   48   60
+
+live done
+[2026-10-31 04:29:59 MNL] run: live.py --date 2026-10-30 --quick
+[2026-10-31 04:30:07 MNL] output tail:
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Meleek Thomas, Dereck Lively II, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Cameron Johnson, Julian Strawther, Spencer Jones, Jalen Duren, Gui Santos, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Ziaire Williams, Quinten Post, Anthony Edwards, Donte DiVincenzo, Dejounte Murray, Jordan Poole, Yves Missi, Jose Alvarado, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Tacko Fall, Mark Williams, Chris Youngblood, Ja Morant, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Noah Clowney, Jalen Smith, Tobe Awaka, Naji Marshall, Alpha Diallo, Isaiah Joe, Alperen Sengun, Marcus Smart, Simone Fontecchio, Jaylen Brown, Oso Ighodaro, Tre Johnson
+
+NO MATCH in data/P_*.csv (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-30 ===
+2026-10-30: 10 games, 80 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CHA @ WAS    33   50   61   56   41   61   56   55   48   60
+CHI @ BOS    80   54   65   56   41   61   62   59   53   60
+DET @ BKN    26   49   55   56   41   61   55   57   48   60
+NYK @ PHI    42   45   54   56   41   61   51   53   45   60
+ORL @ TOR    67   49   46   56   41   61   56   54   47   60
+IND @ MIA    66   58   59   56   41   61   63   54   47   60
+HOU @ DAL    37   53   48   56   41   61   58   54   46   60
+LAC @ MIN    61   51   55   56   41   61   56   53   46   60
+LAL @ GSW    45   49   56   56   41   61   54   53   48   60
+DEN @ PHX    45   54   61   56   41   61   59   53   48   60
+
+live done
+[2026-10-31 05:00:00 MNL] run: live.py --date 2026-10-30 --quick
+[2026-10-31 05:00:14 MNL] output tail:
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Nic Claxton, Jaylon Tyson, Dereck Lively II, Naji Marshall, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Alpha Diallo, Cameron Johnson, Julian Strawther, Spencer Jones, Isaiah Joe, Jalen Duren, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Ziaire Williams, Quinten Post, Simone Fontecchio, Anthony Edwards, Donte DiVincenzo, Dejounte Murray, Jordan Poole, Yves Missi, Jose Alvarado, Karl-Anthony Towns, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Jaylen Brown, Tacko Fall, Mark Williams, Chris Youngblood, Ja Morant, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Noah Clowney, Dailyn Swain, Jalen Smith, Tobe Awaka, Meleek Thomas, Gui Santos, Alperen Sengun, Marcus Smart, Obi Toppin, Oso Ighodaro, Tre Johnson
+
+NO MATCH in data/P_*.csv (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-30 ===
+2026-10-30: 10 games, 85 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CHA @ WAS    33   50   61   56   41   61   56   55   48   60
+CHI @ BOS    80   54   65   56   41   61   62   59   53   60
+DET @ BKN    26   49   55   56   41   61   55   57   48   60
+NYK @ PHI    42   45   54   56   41   61   51   53   45   60
+ORL @ TOR    67   49   46   56   41   61   56   54   47   60
+IND @ MIA    66   58   59   56   41   61   63   54   47   60
+HOU @ DAL    37   53   48   56   41   61   58   54   46   60
+LAC @ MIN    61   51   55   56   41   61   56   53   46   60
+LAL @ GSW    45   49   56   56   41   61   54   53   48   60
+DEN @ PHX    45   54   61   56   41   61   59   53   48   60
+
+live done
+[2026-10-31 05:59:59 MNL] lock held by another run, skipping this slot
+[2026-10-31 06:29:59 MNL] run: live.py --date 2026-10-30 --quick
+[2026-10-31 06:30:07 MNL] output tail:
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Dailyn Swain, Nic Claxton, Jaylon Tyson, Dereck Lively II, Naji Marshall, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Alpha Diallo, Cameron Johnson, Julian Strawther, Spencer Jones, Isaiah Joe, Jalen Duren, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Ziaire Williams, Quinten Post, Simone Fontecchio, Anthony Edwards, Donte DiVincenzo, Jordan Poole, Yves Missi, Jose Alvarado, Karl-Anthony Towns, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Jaylen Brown, Tacko Fall, Mark Williams, Chris Youngblood, Ja Morant, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Meleek Thomas, Gui Santos, Alperen Sengun, Marcus Smart, Obi Toppin, Oso Ighodaro
+
+NO MATCH in data/P_*.csv (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-30 ===
+2026-10-30: 10 games, 85 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CHA @ WAS    33   50   61   56   41   61   56   55   48   60
+CHI @ BOS    80   54   65   56   41   61   62   59   53   60
+DET @ BKN    26   49   55   56   41   61   55   57   48   60
+NYK @ PHI    42   45   54   56   41   61   51   53   45   60
+ORL @ TOR    67   49   46   56   41   61   56   54   47   60
+IND @ MIA    66   58   59   56   41   61   63   54   47   60
+HOU @ DAL    37   53   48   56   41   61   58   54   46   60
+LAC @ MIN    61   51   55   56   41   61   56   53   46   60
+LAL @ GSW    45   49   56   56   41   61   54   53   48   60
+DEN @ PHX    45   54   61   56   41   61   59   53   48   60
+
+live done
+[2026-10-31 06:44:59 MNL] lock held by another run, skipping this slot
+[2026-10-31 06:59:59 MNL] run: live.py --date 2026-10-30 --quick
+[2026-10-31 07:00:06 MNL] output tail:
+
+OUT: Henri Veesaar, Mouhamed Gueye, Devin Carter, Egor Demin, Tyler Bilodeau, Coby White, Grant Williams, Kon Knueppel, Kylan Boswell, Dailyn Swain, Nic Claxton, Jaylon Tyson, Dereck Lively II, Naji Marshall, Santi Aldama, Sergio de Larrea, Tarik Biberovic, Alpha Diallo, Cameron Johnson, Julian Strawther, Spencer Jones, Isaiah Joe, Jalen Duren, Jimmy Butler III, Kristaps Porzingis, Moses Moody, Reed Sheppard, Steven Adams, Ben Sheppard, Ivica Zubac, Johnny Furphy, T.J. McConnell, Tyrese Haliburton, Bradley Beal, Brandon Ingram, Jordan Miller, Max Strus, Rui Hachimura, Yanic Konan Niederhauser, Adou Thiero, Ziaire Williams, Quinten Post, Simone Fontecchio, Anthony Edwards, Donte DiVincenzo, Jordan Poole, Yves Missi, Jose Alvarado, Karl-Anthony Towns, Alex Caruso, Cason Wallace, Chet Holmgren, Jalen Williams, Nikola Topic, Thomas Sorber, Izaiyah Nelson, Jalen Suggs, Jonathan Isaac, Noah Penda, Paolo Banchero, Ariel Hukporti, Dominick Barlow, Jabari Walker, Jaylen Brown, Tacko Fall, Mark Williams, Chris Youngblood, Ja Morant, Robert Williams III, Shaedon Sharpe, Ben Simmons, Dylan Cardwell, Keegan Murray, Maxime Raynaud, Jayden Quaintance, Tobias Harris, Kawhi Leonard, Nate Bittle, Jaren Jackson Jr., Jusuf Nurkic, Lauri Markkanen, Trey Alexander, Jamir Watkins, Justin Champagnie, Tristan Vukcevic
+
+QUESTIONABLE: Meleek Thomas, Gui Santos, Alperen Sengun, Marcus Smart, Obi Toppin, Oso Ighodaro
+
+NO MATCH in data/P_*.csv (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+Rookies with no games yet are fine. Real stars here need an entry in names.ALIASES.
+
+=== run_today.py --date 2026-10-30 ===
+2026-10-30: 10 games, 85 players marked out
+home/away NOT verifiable (no finished games). First live day: spot-check one game against the NBA schedule.
+out.txt names with no match in player logs (9): Henri Veesaar, Tyler Bilodeau, Kylan Boswell, Tarik Biberovic, Thomas Sorber, Izaiyah Nelson, Tacko Fall, Jayden Quaintance, Nate Bittle
+
+CHA @ WAS    33   50   61   56   41   61   56   55   48   60
+CHI @ BOS    80   54   65   56   41   61   62   59   53   60
+DET @ BKN    26   49   55   56   41   61   55   57   48   60
+NYK @ PHI    42   45   54   56   41   61   51   53   45   60
+ORL @ TOR    67   49   46   56   41   61   56   54   47   60
+IND @ MIA    66   58   59   56   41   61   63   54   47   60
+HOU @ DAL    37   53   48   56   41   61   58   54   46   60
+LAC @ MIN    61   51   55   56   41   61   56   53   46   60
+LAL @ GSW    45   49   56   56   41   61   54   53   48   60
+DEN @ PHX    45   54   61   56   41   61   59   53   48   60
+
+live done
+[2026-10-31 07:14:59 MNL] lock held by another run, skipping this slot
